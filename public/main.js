@@ -10,6 +10,8 @@ const callButton = document.getElementById("callButton");
 const muteAudioButton = document.getElementById("muteAudioButton");
 const muteVideoButton = document.getElementById("muteVideoButton");
 const addUsers = document.getElementById("adduser");
+const leaveButton = document.getElementById("leaveButton");
+const messagesEvent = document.getElementById("messages");
 let userId;
 let localStream;
 
@@ -55,28 +57,43 @@ ws.onmessage = (event) => {
 	const data = JSON.parse(event.data);
 	const { type, payload, callerId } = data;
 	console.log(type, callerId);
-	if (type === "newuser") {
-		console.log(type);
-	}
-	if (type === "offer") {
-		peerConnection
-			.setRemoteDescription(new RTCSessionDescription(payload))
-			.then(() => peerConnection.createAnswer())
-			.then((answer) => {
-				peerConnection.setLocalDescription(answer);
-				ws.send(
-					JSON.stringify({
-						type: "answer",
-						payload: answer,
-						callerId: userId,
-					}),
+	switch (type) {
+		case "newuser":
+			console.log(type);
+			messagesEvent.innerText="you joined the event"
+			break;
+		case "offer":
+			peerConnection
+				.setRemoteDescription(new RTCSessionDescription(payload))
+				.then(() => peerConnection.createAnswer())
+				.then((answer) => {
+					peerConnection.setLocalDescription(answer);
+					ws.send(
+						JSON.stringify({
+							type: "answer",
+							payload: answer,
+							callerId: userId,
+						}),
+					);
+				})
+				.catch((error) =>
+					console.error("Error creating answer:", error),
 				);
-			})
-			.catch((error) => console.error("Error creating answer:", error));
-	} else if (type === "answer") {
-		peerConnection.setRemoteDescription(new RTCSessionDescription(payload));
-	} else if (type === "candidate") {
-		peerConnection.addIceCandidate(new RTCIceCandidate(payload));
+			break;
+		case "answer":
+			peerConnection.setRemoteDescription(
+				new RTCSessionDescription(payload),
+			);
+			break;
+		case "candidate":
+			peerConnection.addIceCandidate(new RTCIceCandidate(payload));
+			break;
+		default:
+			console.log("no event");
+			remoteVideo.getTracks().forEach((track) => track.stop());
+			peerConnection.close();
+			messagesEvent.innerText=`${callerId} left the call`
+			break;
 	}
 };
 
@@ -140,4 +157,10 @@ muteVideoButton.addEventListener("click", () => {
 	videoTracks.forEach((track) => {
 		track.enabled = !track.enabled;
 	});
+});
+
+leaveButton.addEventListener("click", () => {
+	localStream.getTracks().forEach((track) => track.stop());
+	peerConnection.close();
+	ws.send(JSON.stringify({ type: "leave", callerId: userId, payload: null }));
 });

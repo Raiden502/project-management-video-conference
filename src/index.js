@@ -79,9 +79,18 @@ sockserver.on("connection", (ws) => {
 				break;
 			case "leave": // Handle user leaving
 				delete clients[callerId];
+                sockserver.clients.forEach(function each(client) {
+                    if (client !== ws && client.readyState === WebSocket.OPEN) {
+                        client.send(JSON.stringify({
+                            type: "leave",
+                            callerId: callerId,
+                        }));
+                    }
+                });
 				break;
 			default:
 				console.error("Unknown message type:", type);
+				break
 		}
 	});
 
