@@ -62,7 +62,7 @@ const clientPickup = async (type, receiverInfo, userInfo, socket) => {
 	console.log(receiverInfo);
 	const query = {
 		name: "send-callpickup",
-		text: "select video_socket_id from users_info where user_id = $1 and video_socket_id notnull",
+		text: "select video_socket_id from user_info where user_id = $1 and video_socket_id notnull",
 		values: [receiverInfo.id],
 	};
 	try {
@@ -81,7 +81,7 @@ const clientPickup = async (type, receiverInfo, userInfo, socket) => {
 const clientPickupAns = async (accept, receiverInfo, userInfo, socket) => {
 	const query = {
 		name: "send-callpickup",
-		text: "select video_socket_id from users_info where user_id = $1 and video_socket_id notnull",
+		text: "select video_socket_id from user_info where user_id = $1 and video_socket_id notnull",
 		values: [receiverInfo.id],
 	};
 	try {
@@ -100,7 +100,7 @@ const clientPickupAns = async (accept, receiverInfo, userInfo, socket) => {
 const clientOffer = async (payload, receiverId, socket) => {
 	const query = {
 		name: "send-offer",
-		text: "select video_socket_id from users_info where user_id = $1 and video_socket_id notnull",
+		text: "select video_socket_id from user_info where user_id = $1 and video_socket_id notnull",
 		values: [receiverId],
 	};
 	try {
@@ -118,7 +118,7 @@ const clientOffer = async (payload, receiverId, socket) => {
 const clientAnswer = async (payload, receiverId, socket) => {
 	const query = {
 		name: "send-answer",
-		text: "select video_socket_id from users_info where user_id = $1 and video_socket_id notnull",
+		text: "select video_socket_id from user_info where user_id = $1 and video_socket_id notnull",
 		values: [receiverId],
 	};
 	try {
@@ -136,7 +136,7 @@ const clientAnswer = async (payload, receiverId, socket) => {
 const clientCandidate = async (payload, receiverId, socket) => {
 	const query = {
 		name: "send-answer",
-		text: "select video_socket_id from users_info where user_id = $1 and video_socket_id notnull",
+		text: "select video_socket_id from user_info where user_id = $1 and video_socket_id notnull",
 		values: [receiverId],
 	};
 	try {
@@ -154,7 +154,7 @@ const clientCandidate = async (payload, receiverId, socket) => {
 const clientLeave = async (payload, receiverId, socket) => {
 	const query = {
 		name: "send-leave",
-		text: "select video_socket_id from users_info where user_id = $1 and video_socket_id notnull",
+		text: "select video_socket_id from user_info where user_id = $1 and video_socket_id notnull",
 		values: [receiverId],
 	};
 	try {
@@ -172,7 +172,7 @@ const clientLeave = async (payload, receiverId, socket) => {
 const DisconnectSocket = async (clientID) => {
 	const query = {
 		name: "set-socket-null",
-		text: "update users_info set video_socket_id = null where user_id = $1",
+		text: "update user_info set video_socket_id = null where user_id = $1",
 		values: [clientID],
 	};
 	try {

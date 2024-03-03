@@ -11,5 +11,5 @@ initializeSockets(server);
 const { PORT, HOST } = process.env;
 
 server.listen(PORT, HOST, () => {
-	console.log("Server listening on port", PORT);
+	console.log("Server listening on port", HOST,  PORT);
 });

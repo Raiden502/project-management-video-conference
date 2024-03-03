@@ -16,7 +16,7 @@ const SocketMiddleware = async (socket, next) => {
 	if (clientID) {
 		const query = {
 			name: "set-socket",
-			text: "update users_info set video_socket_id = $1 where user_id = $2",
+			text: "update user_info set video_socket_id = $1 where user_id = $2",
 			values: [socket.id, clientID],
 		};
 		try {
