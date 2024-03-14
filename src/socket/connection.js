@@ -12,7 +12,7 @@ import { queryDatabase } from "../db/queryDb.js";
 
 const SocketMiddleware = async (socket, next) => {
 	const clientID = socket.handshake.auth.clientID;
-	console.log("request", clientID)
+	console.log("connect", socket.id, clientID)
 	if (clientID) {
 		const query = {
 			name: "set-socket",
@@ -56,6 +56,7 @@ const SocketConnection = (socket) => {
 		clientLeave(payload, receiverId, socket);
 	});
 	socket.on("disconnect", () => {
+		console.log("disconnected", socket.id);
 		const clientID = socket.handshake.auth.clientID;
 		if (clientID) {
 			DisconnectSocket(clientID);

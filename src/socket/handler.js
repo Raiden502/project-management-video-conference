@@ -59,7 +59,6 @@ const HandleSignaling = (message, clients, socket) => {
 };
 
 const clientPickup = async (type, receiverInfo, userInfo, socket) => {
-	console.log(receiverInfo);
 	const query = {
 		name: "send-callpickup",
 		text: "select video_socket_id from user_info where user_id = $1 and video_socket_id notnull",
@@ -67,12 +66,12 @@ const clientPickup = async (type, receiverInfo, userInfo, socket) => {
 	};
 	try {
 		const data = await queryDatabase(query);
+		console.log("pickup", data[0].video_socket_id);
 		socket.to(data[0].video_socket_id).emit("newcalls", {
 			receiverInfo,
 			userInfo,
 			type,
 		});
-		console.log("pickup successfull");
 	} catch (error) {
 		console.error("error unable to fetch in pickup", error);
 	}
@@ -86,12 +85,12 @@ const clientPickupAns = async (accept, receiverInfo, userInfo, socket) => {
 	};
 	try {
 		const data = await queryDatabase(query);
+		console.log("answered", data[0].video_socket_id);
 		socket.to(data[0].video_socket_id).emit("accepincoming", {
 			accept: accept,
 			receiverInfo: receiverInfo,
 			userInfo: userInfo,
 		});
-		console.log("answered successfull");
 	} catch (error) {
 		console.error("error unable to fetch in pickup", error);
 	}
@@ -105,11 +104,11 @@ const clientOffer = async (payload, receiverId, socket) => {
 	};
 	try {
 		const data = await queryDatabase(query);
+		console.log("offer", data[0].video_socket_id);
 		socket.to(data[0].video_socket_id).emit("offer", {
 			payload: payload,
 			receiverId: receiverId,
 		});
-		console.log("offer successfull");
 	} catch (error) {
 		console.error("error unable to fetch in offer");
 	}
@@ -123,11 +122,11 @@ const clientAnswer = async (payload, receiverId, socket) => {
 	};
 	try {
 		const data = await queryDatabase(query);
+		console.log("client answer", data[0].video_socket_id);
 		socket.to(data[0].video_socket_id).emit("answer", {
 			payload: payload,
 			receiverId: receiverId,
 		});
-		console.log("answer successfull");
 	} catch (error) {
 		console.error("error unable to answer");
 	}
@@ -141,11 +140,11 @@ const clientCandidate = async (payload, receiverId, socket) => {
 	};
 	try {
 		const data = await queryDatabase(query);
+		console.log("candidate", data[0].video_socket_id);
 		socket.to(data[0].video_socket_id).emit("candidate", {
 			payload: payload,
 			receiverId: receiverId,
 		});
-		console.log("candidate successfull");
 	} catch (error) {
 		console.error("error unable to send cand");
 	}
@@ -159,11 +158,11 @@ const clientLeave = async (payload, receiverId, socket) => {
 	};
 	try {
 		const data = await queryDatabase(query);
+		console.log("leave", data[0].video_socket_id);
 		socket.to(data[0].video_socket_id).emit("leave", {
 			payload: payload,
 			receiverId: receiverId,
 		});
-		console.log("leave successfull");
 	} catch (error) {
 		console.error("error unable to leave");
 	}
@@ -177,7 +176,6 @@ const DisconnectSocket = async (clientID) => {
 	};
 	try {
 		const data = await queryDatabase(query);
-		console.log("disconnected successfull");
 	} catch (error) {
 		console.error("error unable to discoonect");
 	}
